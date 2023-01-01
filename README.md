@@ -1,26 +1,33 @@
-# How to deploy a three-tier architecture in AWS using Terraform?
+# This repository contains details on how to deploy a 3 tier application using Terraform in AWS as Cloud Service Provider.
 
 ### What is Terraform?
 
-Terraform is an open-source infrastructure as a code (IAC) tool that allows to create, manage & deploy the production-ready environment. Terraform codifies cloud APIs into declarative configuration files. Terraform can manage both existing service providers and custom in-house solutions.
+Terraform is a tool to automate and manage your infrastructure, your platform, and services that run on the platform.
 
-![1](https://github.com/DhruvinSoni30/Terraform-AWS-3tier-Architecture/blob/main/1.png)
+It is an open source tool.
 
-In this tutorial, I will deploy a three-tier application in AWS using Terraform.
+It uses declarative language knows as HCL.
 
-![2](https://github.com/DhruvinSoni30/Terraform-AWS-3tier-Architecture/blob/main/2.png)
+![1](1.png)
+
+
+### This is the architecture of the project.
+
+
+![2](2.png)
+
+
 
 ### Prerequisites:
 
-* Basic knowledge of AWS & Terraform
-* AWS account
-* AWS Access & Secret Key
+* Basic knowledge of AWS & Terraform.
+* AWS account.
+* AWS Access & Secret Key.
 
-> In this project, I have used some variables also that I will discuss later in this article.
 
 **Step 1:- Create a file for the VPC**
 
-* Create vpc.tf file and add the below code to it
+* Create vpc.tf file using the below code. Note: ".tf" should be the extension of the file, since it is terraform file.
 
   ```
   # Creating VPC
@@ -35,9 +42,8 @@ In this tutorial, I will deploy a three-tier application in AWS using Terraform.
   
 **Step 2:- Create a file for the Subnet**
 
-* For this project, I will create total 6 subnets for the front-end tier and back-end tier with a mixture of public & private subnet
-* Create subnet.tf file and add the below code to it
-
+* For this project, We will be creating a total of 6 subnets for the front-end tier and back-end tier by using both public and private subnets.
+* Create == subnet.tf == file and add the below code to it.
   ```
   # Creating 1st web subnet 
   resource "aws_subnet" "public-subnet-1" {
@@ -101,7 +107,7 @@ In this tutorial, I will deploy a three-tier application in AWS using Terraform.
   
 **Step 3:- Create a file for the Internet Gateway**
 
-* Create igw.tf file and add the below code to it
+* Create igw.tf  file and add the below code to it
 
   ```
   # Creating Internet Gateway 
@@ -175,11 +181,11 @@ In this tutorial, I will deploy a three-tier application in AWS using Terraform.
   }
   ```
 
-* I have used the userdata to configure the EC2 instance, I will discuss data.sh file later in the article
+* We have used data.sh file in this, which will be used later in this project.
 
 **Step 6:- Create a file for Security Group for the FrontEnd tier**
 
-* Create web_sg.tf file and add the below code to it
+* Create web_sg.tf file and add the below details in the file.
 
   ```
   # Creating Security Group 
@@ -221,11 +227,11 @@ In this tutorial, I will deploy a three-tier application in AWS using Terraform.
   }
   ```
 
-* I have opened 80,443 & 22 ports for the inbound connection and I have opened all the ports for the outbound connection
+* Here we have opened 80,443 & 22 ports for the inbound connection and I have opened all the ports for the outbound connection.
 
 **Step 7:- Create a file for Security Group for the Database tier**
 
-* Create database_sg.tf file and add the below code to it
+* Create database_sg.tf file and add below details to it.
 
   ```
   # Create Database Security Group
@@ -298,14 +304,14 @@ In this tutorial, I will deploy a three-tier application in AWS using Terraform.
   }
   }
   ```
-* The above load balancer is of type external
-* Load balancer type is set to application
+* The above load balancer is of type external.
+* Load balancer type is set to application.
 * The aws_lb_target_group_attachment resource will attach our instances to the Target Group.
-* The load balancer will listen requests on port 80
+* The load balancer will listen requests on port 80 i.e HTTP in application layer.
 
 **Step 9:- Create a file for the RDS instance**
 
-* Create a rds.tf file and add the below code to it
+* Create a rds.tf file and add below details to it.
 
   ```
   # Creating RDS Instance
@@ -330,7 +336,7 @@ In this tutorial, I will deploy a three-tier application in AWS using Terraform.
     vpc_security_group_ids = [aws_security_group.database-sg.id]
   }
   ```
-* In the above code, you need to change the value of username & password
+* In the above code, you need to change the value of "username" & "password".
 * multi-az is set to true for the high availability
 
 **Step 10:- Create a file for outputs**
@@ -384,7 +390,7 @@ In this tutorial, I will deploy a three-tier application in AWS using Terraform.
 
 **Step 12:- Create a file for user data**
 
-* Create data.sh file and add the below code to it
+* Create data.sh file and add the below details to it.
 
   ```
   #!/bin/bash
@@ -395,9 +401,9 @@ In this tutorial, I will deploy a three-tier application in AWS using Terraform.
   echo "Hello World from $(hostname -f)" > /var/www/html/index.html
   ```
   
-* The above code will install an apache webserver in the EC2 instances
+* The above script will install Http Apache server in all instances.
 
-So, now our entire code is ready. We need to run the below steps to create infrastructure.
+So, now the entire project configuration details are done.
 
 * terraform init is to initialize the working directory and downloading plugins of the provider
 * terraform plan is to create the execution plan for our code
@@ -418,8 +424,8 @@ So, now our entire code is ready. We need to run the below steps to create infra
   * Security Groups for Web & RDS instances
   * Route Table
 
-Once the resource creation finishes you can get the DNS of a load balancer and paste it into the browser and you can see load balancer will send the request to two instances.
+Once the resource creation is completed, you can get the DNS of a load balancer and paste it into the browser and you can see load balancer will send the request to two instances.
 
-That’s it now, you have learned how to create various resources in AWS using Terraform.
+That’s it, now we have succesfully completed the deployment of our 3 tier application using Terraform in AWS CSP.
 
  
